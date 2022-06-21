@@ -9,13 +9,13 @@ document.addEventListener('DOMContentLoaded', () => {
             "Одержимость",
             "Скотт Пилигрим против..."
     ]};
-
     const adv = document.querySelectorAll('.promo__adv img'),
           poster = document.querySelector('.promo__bg'),
           genre = poster.querySelector('.promo__genre'),
           movieList = document.querySelector('.promo__interactive-list'),
-          btn = document.querySelector('button'),
-          newFilm = document.querySelector('.adding__input');
+          addForm = document.querySelector('form.add'),
+          addInput = addForm.querySelector('.adding__input'),
+          checkBox = addForm.querySelector('[type="checkbox"]');
 
     adv.forEach(item => {
         item.remove();
@@ -25,9 +25,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     poster.style.backgroundImage = 'url("img/bg.jpg")';
 
-    btn.addEventListener('click', function(event) {
+    addForm.addEventListener('submit', function(event) {
         event.preventDefault();
-        movieDB.movies.push(newFilm.value);
+        if (addInput.value.length > 21) {
+            movieDB.movies.push(addInput.value.slice(0, 21) + '...');
+        } else {
+            movieDB.movies.push(addInput.value);
+        }
         createMovieList(movieDB.movies, movieList);
     });
 
@@ -49,4 +53,5 @@ document.addEventListener('DOMContentLoaded', () => {
 
     createMovieList(movieDB.movies, movieList);
     sortFilmByAlph(movieDB.movies);
+    console.log(checkBox);
 });
