@@ -32,6 +32,9 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             movieDB.movies.push(addInput.value);
         }
+        if (checkBox.checked == true) {
+            console.log("Добавляем любимый фильм");
+        }
         createMovieList(movieDB.movies, movieList);
     });
 
@@ -53,5 +56,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     createMovieList(movieDB.movies, movieList);
     sortFilmByAlph(movieDB.movies);
-    console.log(checkBox);
+
+    console.log(movieList);
 });
