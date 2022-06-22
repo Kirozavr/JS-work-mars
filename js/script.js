@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
             "Одержимость",
             "Скотт Пилигрим против..."
     ]};
+
     const adv = document.querySelectorAll('.promo__adv img'),
           poster = document.querySelector('.promo__bg'),
           genre = poster.querySelector('.promo__genre'),
@@ -17,30 +18,24 @@ document.addEventListener('DOMContentLoaded', () => {
           addInput = addForm.querySelector('.adding__input'),
           checkBox = addForm.querySelector('[type="checkbox"]');
 
-    adv.forEach(item => {
-        item.remove();
-    });
+    const deleteAdv = (arr) => {
+        arr.forEach(item => {
+            item.remove();
+        });
+    };
 
-    genre.textContent = 'драма';
+    const makeChanges = () => {
+        genre.textContent = 'драма';
+        poster.style.backgroundImage = 'url("img/bg.jpg")';
+    };
 
-    poster.style.backgroundImage = 'url("img/bg.jpg")';
+    const sortFilmByAlph = (arr) => {
+        arr.sort();
+    };
 
-    addForm.addEventListener('submit', function(event) {
-        event.preventDefault();
-        if (addInput.value.length > 21) {
-            movieDB.movies.push(addInput.value.slice(0, 21) + '...');
-        } else {
-            movieDB.movies.push(addInput.value);
-        }
-        if (checkBox.checked == true) {
-            console.log("Добавляем любимый фильм");
-        }
-        createMovieList(movieDB.movies, movieList);
-    });
-
-    function createMovieList(films, parent) {
-        sortFilmByAlph(movieDB.movies);
+    const createMovieList = (films, parent) => {
         parent.innerHTML = "";
+        sortFilmByAlph(movieDB.movies);
         films.forEach((film, i) => {
             parent.innerHTML += `
                 <li class="promo__interactive-item">${i + 1} ${film}
@@ -48,14 +43,37 @@ document.addEventListener('DOMContentLoaded', () => {
                 </li>
             `;
         });
-    }
+        document.querySelectorAll('.delete').forEach((btn, i) => {
+            // на кажую кнопку вешаем одно действие с помощью forEach
+            btn.addEventListener('click', () => {
+                // удаляем родителя
+                btn.parentElement.remove();
+                // удаляем из базы данных
+                movieDB.movies.splice(i, 1);
+                // рекурсия - вызов функции в самой себе, чтобы нумерация заново собралась
+                createMovieList(films, parent);
+            });
+        });
+    };
 
-    function sortFilmByAlph(arr) {
-        arr.sort();
-    }
+    addForm.addEventListener('submit', function(event) {
+        event.preventDefault();
+        // Проверка того, что передается не пустая строка
+        if (addInput.value) {
+            if (addInput.value.length > 21) {
+                movieDB.movies.push(`${addInput.value.slice(0, 22)}...`);
+            } else {
+                movieDB.movies.push(addInput.value);
+            }
+            if (checkBox.checked) {
+                console.log("Добавляем любимый фильм");
+            }
+            createMovieList(movieDB.movies, movieList);
+            event.target.reset();
+        }
+    });
 
     createMovieList(movieDB.movies, movieList);
-    sortFilmByAlph(movieDB.movies);
-
-    console.log(movieList);
+    deleteAdv(adv);
+    makeChanges();
 });
